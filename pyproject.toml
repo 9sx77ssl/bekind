@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "telegram-autoblur"
+version = "0.1.0"
+description = "Telegram userbot for blurring Russian profanity in outgoing messages"
+requires-python = ">=3.10"
+dependencies = [
+    "pyrogram>=2.0.106",
+    "tgcrypto>=1.2.5",
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+telegram_autoblur = ["data/*.txt", "data/sources/*.txt", "data/sources/*.md"]
