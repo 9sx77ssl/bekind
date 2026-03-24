@@ -57,6 +57,10 @@ def load_patterns() -> list[str]:
     return [line.removesuffix(".*").strip() for line in read_lines(DATA_DIR / "patterns.txt")]
 
 
+def load_roots() -> set[str]:
+    return {normalize(line) for line in read_lines(DATA_DIR / "roots.txt")}
+
+
 def load_bars38_words() -> set[str]:
     return {normalize(line) for line in read_lines(SOURCES_DIR / "bars38_words.txt")}
 

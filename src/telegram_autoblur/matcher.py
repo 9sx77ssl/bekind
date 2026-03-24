@@ -1,14 +1,15 @@
 from __future__ import annotations
 
-import re
 from dataclasses import dataclass
+import re
 
-from telegram_autoblur.loader import WORD_RE, load_manual_words, load_patterns, load_safe_words, load_source_words, normalize
+from telegram_autoblur.loader import WORD_RE, load_manual_words, load_patterns, load_roots, load_safe_words, load_source_words, normalize
 
 
 @dataclass(frozen=True)
 class Matcher:
     exact_words: frozenset[str]
+    roots: tuple[str, ...]
     safe_words: frozenset[str]
     patterns: tuple[re.Pattern[str], ...]
 
@@ -29,6 +30,15 @@ class Matcher:
                 match = pattern.match(suffix)
                 if match:
                     spans.append((start, start + match.end()))
+        return spans
+
+    def _root_spans(self, normalized: str) -> list[tuple[int, int]]:
+        spans: list[tuple[int, int]] = []
+        for root in self.roots:
+            start = normalized.find(root)
+            while start != -1:
+                spans.append((start, start + len(root)))
+                start = normalized.find(root, start + 1)
         return spans
 
     def _select_spans(self, spans: list[tuple[int, int]]) -> list[tuple[int, int]]:
@@ -59,6 +69,7 @@ class Matcher:
             return []
 
         spans = self._exact_spans(normalized)
+        spans.extend(self._root_spans(normalized))
         spans.extend(self._pattern_spans(normalized))
         return self._select_spans(spans)
 
@@ -82,10 +93,12 @@ class Matcher:
 def build_matcher() -> Matcher:
     exact_words = load_source_words()
     exact_words.update(load_manual_words())
+    roots = tuple(sorted(load_roots(), key=len, reverse=True))
     safe_words = load_safe_words()
     patterns = tuple(re.compile(pattern) for pattern in load_patterns())
     return Matcher(
         exact_words=frozenset(exact_words),
+        roots=roots,
         safe_words=frozenset(safe_words),
         patterns=patterns,
     )
