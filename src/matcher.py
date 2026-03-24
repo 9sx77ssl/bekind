@@ -45,6 +45,8 @@ class Matcher:
             if len(root) < self.min_inner_length:
                 if normalized == root:
                     spans.append((0, len(root)))
+                elif normalized.startswith(root) and len(normalized) >= self.min_inner_length:
+                    spans.append((0, len(root)))
                 continue
             start = normalized.find(root)
             while start != -1:

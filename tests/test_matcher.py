@@ -26,6 +26,7 @@ class MatcherTests(unittest.TestCase):
             "разъебал": "раз*ебал",
             "подъебка": "под*ебка",
             "съебался": "съе*ался",
+            "уебки": "у*бки",
             "охуевший": "охуе*ший",
             "пидорасина": "пидор*сина",
             "пиздецнахуй": "пиз*ецна*уй",
@@ -41,8 +42,8 @@ class MatcherTests(unittest.TestCase):
                 self.assertEqual(self.matcher.blur_text(source), expected)
 
     def test_blurs_inside_sentence(self) -> None:
-        source = "ты хуесос и уебан, а это выблядок"
-        expected = "ты хуе*ос и уе*ан, а это выбл*док"
+        source = "ты хуесос и уебан, а это выблядок и уебки"
+        expected = "ты хуе*ос и уе*ан, а это выбл*док и у*бки"
         self.assertEqual(self.matcher.blur_text(source), expected)
 
     def test_does_not_blur_safe_words(self) -> None:
