@@ -54,7 +54,7 @@ def load_safe_words() -> set[str]:
 
 
 def load_patterns() -> list[str]:
-    return [line.strip() for line in read_lines(DATA_DIR / "patterns.txt")]
+    return [line.removesuffix(".*").strip() for line in read_lines(DATA_DIR / "patterns.txt")]
 
 
 def load_bars38_words() -> set[str]:

@@ -12,24 +12,64 @@ class Matcher:
     safe_words: frozenset[str]
     patterns: tuple[re.Pattern[str], ...]
 
-    def should_blur(self, word: str) -> bool:
+    def _exact_spans(self, normalized: str) -> list[tuple[int, int]]:
+        spans: list[tuple[int, int]] = []
+        for candidate in self.exact_words:
+            start = normalized.find(candidate)
+            while start != -1:
+                spans.append((start, start + len(candidate)))
+                start = normalized.find(candidate, start + 1)
+        return spans
+
+    def _pattern_spans(self, normalized: str) -> list[tuple[int, int]]:
+        spans: list[tuple[int, int]] = []
+        for start in range(len(normalized)):
+            suffix = normalized[start:]
+            for pattern in self.patterns:
+                match = pattern.match(suffix)
+                if match:
+                    spans.append((start, start + match.end()))
+        return spans
+
+    def _select_spans(self, spans: list[tuple[int, int]]) -> list[tuple[int, int]]:
+        selected: list[tuple[int, int]] = []
+        for start, end in sorted(spans, key=lambda item: (item[0], -(item[1] - item[0]))):
+            if any(not (end <= kept_start or start >= kept_end) for kept_start, kept_end in selected):
+                continue
+            selected.append((start, end))
+        return selected
+
+    def _blur_spans(self, word: str, spans: list[tuple[int, int]]) -> str:
+        chars = list(word)
+        for start, end in spans:
+            if end - start <= 0:
+                continue
+            middle = start + ((end - start) // 2)
+            if 0 <= middle < len(chars):
+                chars[middle] = "*"
+        return "".join(chars)
+
+    def find_blur_spans(self, word: str) -> list[tuple[int, int]]:
         normalized = normalize(word)
         if len(normalized) < 3:
-            return False
+            return []
         if normalized in self.safe_words:
-            return False
-        if normalized in self.exact_words:
-            return True
-        return any(pattern.match(normalized) for pattern in self.patterns)
+            return []
+        if any(normalized.startswith(safe_word) for safe_word in self.safe_words if len(safe_word) >= 4):
+            return []
+
+        spans = self._exact_spans(normalized)
+        spans.extend(self._pattern_spans(normalized))
+        return self._select_spans(spans)
+
+    def should_blur(self, word: str) -> bool:
+        return bool(self.find_blur_spans(word))
 
     def blur_word(self, word: str) -> str:
-        if len(word) <= 2:
+        spans = self.find_blur_spans(word)
+        if not spans:
             return word
-        if len(word) == 3:
-            return f"{word[0]}*{word[-1]}"
-        if len(word) == 4:
-            return f"{word[:2]}*{word[-1]}"
-        return f"{word[:2]}*{word[-2:]}"
+        return self._blur_spans(word, spans)
 
     def blur_text(self, text: str) -> str:
         def replace(match: re.Match[str]) -> str:

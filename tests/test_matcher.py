@@ -14,17 +14,22 @@ class MatcherTests(unittest.TestCase):
 
     def test_blurs_requested_words(self) -> None:
         cases = {
-            "хуесос": "ху*ос",
+            "хуесос": "хуе*ос",
             "пидор": "пи*ор",
             "уебан": "уе*ан",
-            "выблядок": "вы*ок",
+            "выблядок": "выбл*док",
             "мразь": "мр*зь",
             "шлюха": "шл*ха",
             "шмара": "шм*ра",
-            "разъебал": "ра*ал",
-            "подъебка": "по*ка",
-            "съебался": "съ*ся",
-            "охуевший": "ох*ий",
+            "шлендра": "шле*дра",
+            "шлёндра": "шлё*дра",
+            "разъебал": "раз*ебал",
+            "подъебка": "под*ебка",
+            "съебался": "съе*ался",
+            "охуевший": "охуе*ший",
+            "пидорасина": "пидор*сина",
+            "пиздецнахуй": "пиз*ецна*уй",
+            "тывыблядок": "тывыбл*док",
         }
         for source, expected in cases.items():
             with self.subTest(source=source):
@@ -32,7 +37,7 @@ class MatcherTests(unittest.TestCase):
 
     def test_blurs_inside_sentence(self) -> None:
         source = "ты хуесос и уебан, а это выблядок"
-        expected = "ты ху*ос и уе*ан, а это вы*ок"
+        expected = "ты хуе*ос и уе*ан, а это выбл*док"
         self.assertEqual(self.matcher.blur_text(source), expected)
 
     def test_does_not_blur_safe_words(self) -> None:
