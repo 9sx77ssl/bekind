@@ -1,17 +1,12 @@
-import os
 from typing import Optional
 
 from pyrogram import Client, filters
 from pyrogram.errors import FloodWait, MessageAuthorRequired, MessageIdInvalid, MessageNotModified, RPCError
 
+from telegram_autoblur.config import load_settings
 from telegram_autoblur.matcher import blur_text
 
-
-API_ID = int(os.environ["TG_API_ID"])
-API_HASH = os.environ["TG_API_HASH"]
-SESSION_NAME = os.environ.get("TG_SESSION_NAME", "mat-autoblur")
-
-app = Client(SESSION_NAME, api_id=API_ID, api_hash=API_HASH)
+app: Client | None = None
 
 
 def _edited_text(text: Optional[str]) -> Optional[str]:
@@ -24,6 +19,8 @@ def _edited_text(text: Optional[str]) -> Optional[str]:
 
 
 async def _edit_message(message, text: str, *, is_caption: bool) -> None:
+    if app is None:
+        return
     try:
         if is_caption:
             await message.edit_caption(text)
@@ -46,19 +43,27 @@ async def _edit_message(message, text: str, *, is_caption: bool) -> None:
         return
 
 
-@app.on_message(filters.me & filters.text)
 async def blur_outgoing_text(_, message) -> None:
     text = _edited_text(message.text)
     if text:
         await _edit_message(message, text, is_caption=False)
 
 
-@app.on_message(filters.me & filters.caption)
 async def blur_outgoing_caption(_, message) -> None:
     caption = _edited_text(message.caption)
     if caption:
         await _edit_message(message, caption, is_caption=True)
 
 
+def _build_client() -> Client:
+    settings = load_settings()
+    client = Client(settings.session_name, api_id=settings.api_id, api_hash=settings.api_hash)
+    client.on_message(filters.me & filters.text)(blur_outgoing_text)
+    client.on_message(filters.me & filters.caption)(blur_outgoing_caption)
+    return client
+
+
 def run() -> None:
+    global app
+    app = _build_client()
     app.run()

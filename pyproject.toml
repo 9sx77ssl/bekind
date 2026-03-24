@@ -12,6 +12,9 @@ dependencies = [
     "tgcrypto>=1.2.5",
 ]
 
+[project.scripts]
+telegram-autoblur = "telegram_autoblur.cli:main"
+
 [tool.setuptools]
 package-dir = {"" = "src"}
 

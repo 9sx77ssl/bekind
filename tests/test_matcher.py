@@ -46,6 +46,9 @@ class MatcherTests(unittest.TestCase):
             "сукно",
             "спам",
             "spam",
+            "аборт",
+            "вагина",
+            "клитор",
         ]
         for word in safe_words:
             with self.subTest(word=word):
@@ -54,7 +57,3 @@ class MatcherTests(unittest.TestCase):
     def test_does_not_touch_clean_sentence(self) -> None:
         source = "подстрахуй меня и возьми мандарин у хулигана"
         self.assertEqual(self.matcher.blur_text(source), source)
-
-
-if __name__ == "__main__":
-    unittest.main()
