@@ -16,6 +16,10 @@ class Matcher:
     def _exact_spans(self, normalized: str) -> list[tuple[int, int]]:
         spans: list[tuple[int, int]] = []
         for candidate in self.exact_words:
+            if len(candidate) < 4:
+                if normalized == candidate:
+                    spans.append((0, len(candidate)))
+                continue
             start = normalized.find(candidate)
             while start != -1:
                 spans.append((start, start + len(candidate)))
@@ -29,12 +33,18 @@ class Matcher:
             for pattern in self.patterns:
                 match = pattern.match(suffix)
                 if match:
+                    if match.end() < 4:
+                        continue
                     spans.append((start, start + match.end()))
         return spans
 
     def _root_spans(self, normalized: str) -> list[tuple[int, int]]:
         spans: list[tuple[int, int]] = []
         for root in self.roots:
+            if len(root) < 4:
+                if normalized == root:
+                    spans.append((0, len(root)))
+                continue
             start = normalized.find(root)
             while start != -1:
                 spans.append((start, start + len(root)))

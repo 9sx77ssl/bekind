@@ -45,6 +45,7 @@ class MatcherTests(unittest.TestCase):
 
     def test_does_not_blur_safe_words(self) -> None:
         safe_words = [
+            "тебя",
             "страхуй",
             "подстрахуй",
             "мандат",
@@ -65,3 +66,8 @@ class MatcherTests(unittest.TestCase):
     def test_does_not_touch_clean_sentence(self) -> None:
         source = "подстрахуй меня и возьми мандарин у хулигана"
         self.assertEqual(self.matcher.blur_text(source), source)
+
+    def test_does_not_blur_tebya_inside_phrase(self) -> None:
+        source = "я бы тебя выебал"
+        expected = "я бы тебя вы*бал"
+        self.assertEqual(self.matcher.blur_text(source), expected)
