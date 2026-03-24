@@ -12,7 +12,7 @@ class Settings:
     session_name: str
 
 
-PROJECT_ROOT = Path(__file__).resolve().parents[2]
+PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 
 def _dotenv_candidates() -> list[Path]:

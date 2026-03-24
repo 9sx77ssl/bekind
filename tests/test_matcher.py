@@ -4,7 +4,7 @@ import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from telegram_autoblur.matcher import build_matcher
+from matcher import build_matcher
 
 
 class MatcherTests(unittest.TestCase):

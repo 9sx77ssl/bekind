@@ -5,7 +5,7 @@ import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from telegram_autoblur.config import PROJECT_ROOT, load_settings
+from config import PROJECT_ROOT, load_settings
 
 
 class ConfigTests(unittest.TestCase):

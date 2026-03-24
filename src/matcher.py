@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 import re
 
-from telegram_autoblur.loader import WORD_RE, load_manual_words, load_patterns, load_roots, load_safe_words, load_source_words, normalize
+from loader import WORD_RE, load_manual_words, load_patterns, load_roots, load_safe_words, load_source_words, normalize
 
 
 @dataclass(frozen=True)
@@ -102,7 +102,7 @@ class Matcher:
 
 
 def build_matcher() -> Matcher:
-    from telegram_autoblur.loader import load_rules
+    from loader import load_rules
 
     rules = load_rules()
     exact_words = load_source_words()

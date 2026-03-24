@@ -1,7 +1,7 @@
 import argparse
 
-from telegram_autoblur.app import run
-from telegram_autoblur.matcher import blur_text
+from app import run
+from matcher import blur_text
 
 
 def main() -> None:

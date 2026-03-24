@@ -3,8 +3,8 @@ from typing import Optional
 from pyrogram import Client, filters
 from pyrogram.errors import FloodWait, MessageAuthorRequired, MessageIdInvalid, MessageNotModified, RPCError
 
-from telegram_autoblur.config import load_settings
-from telegram_autoblur.matcher import blur_text
+from config import load_settings
+from matcher import blur_text
 
 app: Client | None = None
 
