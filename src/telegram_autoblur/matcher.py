@@ -12,11 +12,12 @@ class Matcher:
     roots: tuple[str, ...]
     safe_words: frozenset[str]
     patterns: tuple[re.Pattern[str], ...]
+    min_inner_length: int
 
     def _exact_spans(self, normalized: str) -> list[tuple[int, int]]:
         spans: list[tuple[int, int]] = []
         for candidate in self.exact_words:
-            if len(candidate) < 4:
+            if len(candidate) < self.min_inner_length:
                 if normalized == candidate:
                     spans.append((0, len(candidate)))
                 continue
@@ -33,7 +34,7 @@ class Matcher:
             for pattern in self.patterns:
                 match = pattern.match(suffix)
                 if match:
-                    if match.end() < 4:
+                    if match.end() < self.min_inner_length:
                         continue
                     spans.append((start, start + match.end()))
         return spans
@@ -41,7 +42,7 @@ class Matcher:
     def _root_spans(self, normalized: str) -> list[tuple[int, int]]:
         spans: list[tuple[int, int]] = []
         for root in self.roots:
-            if len(root) < 4:
+            if len(root) < self.min_inner_length:
                 if normalized == root:
                     spans.append((0, len(root)))
                 continue
@@ -101,6 +102,9 @@ class Matcher:
 
 
 def build_matcher() -> Matcher:
+    from telegram_autoblur.loader import load_rules
+
+    rules = load_rules()
     exact_words = load_source_words()
     exact_words.update(load_manual_words())
     roots = tuple(sorted(load_roots(), key=len, reverse=True))
@@ -111,6 +115,7 @@ def build_matcher() -> Matcher:
         roots=roots,
         safe_words=frozenset(safe_words),
         patterns=patterns,
+        min_inner_length=int(rules["generator"]["min_inner_length"]),
     )
 
 

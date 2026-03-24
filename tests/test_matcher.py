@@ -33,6 +33,8 @@ class MatcherTests(unittest.TestCase):
             "пидораснахуй": "пид*расна*уй",
             "ебучийговнюк": "ебу*ийгов*юк",
             "шлюхасука": "шл*хасу*а",
+            "мразотностью": "мра*отностью",
+            "шмаристая": "шм*ристая",
         }
         for source, expected in cases.items():
             with self.subTest(source=source):

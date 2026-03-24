@@ -100,7 +100,6 @@ python3 -m unittest tests.test_matcher tests.test_app -v
 - `bekind.py` — start file
 - `src/telegram_autoblur/app.py` — Telegram client
 - `src/telegram_autoblur/matcher.py` — text blur logic
-- `src/telegram_autoblur/data/manual_words.txt` — your manual word list
-- `src/telegram_autoblur/data/safe_words.txt` — words that must not be blurred
-- `src/telegram_autoblur/data/patterns.txt` — regex patterns
+- `src/telegram_autoblur/data/rules.toml` — single rules file with manual words, roots, patterns, safe words and source settings
+- `src/telegram_autoblur/data/sources/bars38_words.txt` — external source word list
 - `.vscode/settings.json` — VS Code settings so imports from `src` work without warnings
