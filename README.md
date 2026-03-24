@@ -1,57 +1,81 @@
-# Telegram AutoBlur
+# bekind
 
-Userbot on `pyrogram` that edits your outgoing Telegram messages and blurs Russian profanity.
+`bekind.py` is a Telegram userbot on `pyrogram`.
+It watches your outgoing messages and edits Russian profanity into a blurred form.
 
-## Quick Start
+Example:
+
+- `блять` -> `бл*ть`
+- `пидорас` -> `пи*ас`
+- `хуесос` -> `ху*ос`
+
+## 1. Clone the repository
 
 ```bash
-cd /home/rsz/Desktop/blur
+git clone git@github.com:noki44ngel/bekind.git
+cd bekind
+```
+
+## 2. Create a virtual environment
+
+```bash
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -e .
+```
+
+## 3. Install dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+## 4. Create the config file
+
+```bash
 cp .env.example .env
 ```
 
-Fill `.env` with your values from `https://my.telegram.org`.
+Open `.env` and fill in:
 
-Then run:
-
-```bash
-telegram-autoblur
+```env
+TG_API_ID=123456
+TG_API_HASH=your_api_hash_here
+TG_SESSION_NAME=bekind
 ```
 
-Or:
+`TG_API_ID` and `TG_API_HASH` are created here:
+
+- `https://my.telegram.org`
+
+## 5. Run the bot
 
 ```bash
-python3 -m telegram_autoblur
+python3 bekind.py
 ```
 
-At first launch, Pyrogram will ask for:
+On first start Telegram will ask for:
 
 - your phone number
-- Telegram login code
-- 2FA password if enabled
+- the login code
+- your 2FA password if you use one
 
-## Useful Commands
-
-Check a phrase without launching Telegram:
+## Check text without launching Telegram
 
 ```bash
-telegram-autoblur --check-text "ты хуесос и пидорас"
+python3 bekind.py --check-text "ты хуесос, а это мандарин"
 ```
 
-Run tests:
+## Run tests
 
 ```bash
 python3 -m unittest tests.test_matcher tests.test_app -v
 ```
 
-## Project Layout
+## Main files
 
+- `bekind.py` — start file
 - `src/telegram_autoblur/app.py` — Telegram client
-- `src/telegram_autoblur/matcher.py` — blur engine
-- `src/telegram_autoblur/loader.py` — source loading
-- `src/telegram_autoblur/data/manual_words.txt` — manual additions
-- `src/telegram_autoblur/data/safe_words.txt` — safe words
-- `src/telegram_autoblur/data/patterns.txt` — regex rules
-- `tests/test_matcher.py` — checks
+- `src/telegram_autoblur/matcher.py` — text blur logic
+- `src/telegram_autoblur/data/manual_words.txt` — your manual word list
+- `src/telegram_autoblur/data/safe_words.txt` — words that must not be blurred
+- `src/telegram_autoblur/data/patterns.txt` — regex patterns

@@ -32,7 +32,7 @@ def load_settings() -> Settings:
 
     api_id_raw = os.environ.get("TG_API_ID", "").strip()
     api_hash = os.environ.get("TG_API_HASH", "").strip()
-    session_name = os.environ.get("TG_SESSION_NAME", "mat-autoblur").strip() or "mat-autoblur"
+    session_name = os.environ.get("TG_SESSION_NAME", "bekind").strip() or "bekind"
 
     if not api_id_raw:
         raise RuntimeError("Missing TG_API_ID. Add it to .env or export it in the shell.")
