@@ -7,7 +7,6 @@ from pathlib import Path
 
 
 DATA_DIR = Path(__file__).resolve().parent / "data"
-SOURCES_DIR = DATA_DIR / "sources"
 RULES_PATH = DATA_DIR / "rules.toml"
 
 WORD_RE = re.compile(r"[A-Za-zА-Яа-яЁё]+(?:-[A-Za-zА-Яа-яЁё]+)*")
@@ -50,21 +49,5 @@ def load_roots() -> set[str]:
     rules = load_rules()
     return _normalized_words(rules["manual"]["roots"])
 
-
-def load_bars38_words() -> set[str]:
-    rules = load_rules()
-    words: set[str] = set()
-    for relative_path in rules["sources"]["paths"]:
-        words.update({normalize(line) for line in read_lines(DATA_DIR / relative_path)})
-    return words
-
-
 def load_source_words() -> set[str]:
-    rules = load_rules()
-    source_markers = tuple(normalize(marker) for marker in rules["sources"]["markers"])
-    words = load_bars38_words()
-    return {
-        word
-        for word in words
-        if any(marker in word for marker in source_markers)
-    }
+    return set()
