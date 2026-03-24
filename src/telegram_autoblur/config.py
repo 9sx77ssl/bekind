@@ -12,19 +12,31 @@ class Settings:
     session_name: str
 
 
-def _load_dotenv() -> None:
-    env_path = Path(".env")
-    if not env_path.exists():
-        return
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
-    for raw_line in env_path.read_text(encoding="utf-8").splitlines():
-        line = raw_line.strip()
-        if not line or line.startswith("#") or "=" not in line:
+
+def _dotenv_candidates() -> list[Path]:
+    return [
+        Path.cwd() / ".env",
+        PROJECT_ROOT / ".env",
+    ]
+
+
+def _load_dotenv() -> None:
+    for env_path in _dotenv_candidates():
+        if not env_path.exists():
             continue
-        key, value = line.split("=", 1)
-        key = key.strip()
-        value = value.strip().strip('"').strip("'")
-        os.environ.setdefault(key, value)
+        for raw_line in env_path.read_text(encoding="utf-8").splitlines():
+            line = raw_line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            if line.startswith("export "):
+                line = line[len("export ") :].strip()
+            key, value = line.split("=", 1)
+            key = key.strip()
+            value = value.strip().strip('"').strip("'")
+            os.environ.setdefault(key, value)
+        return
 
 
 def load_settings() -> Settings:
@@ -45,4 +57,6 @@ def load_settings() -> Settings:
     except ValueError as exc:
         raise RuntimeError("TG_API_ID must be an integer.") from exc
 
-    return Settings(api_id=api_id, api_hash=api_hash, session_name=session_name)
+    session_path = PROJECT_ROOT / session_name
+
+    return Settings(api_id=api_id, api_hash=api_hash, session_name=str(session_path))

@@ -47,11 +47,35 @@ TG_SESSION_NAME=bekind
 
 - `https://my.telegram.org`
 
+You can write `.env` in either format:
+
+```env
+TG_API_ID=123456
+TG_API_HASH=your_api_hash_here
+TG_SESSION_NAME=bekind
+```
+
+or:
+
+```env
+export TG_API_ID=123456
+export TG_API_HASH=your_api_hash_here
+export TG_SESSION_NAME=bekind
+```
+
 ## 5. Run the bot
 
 ```bash
 python3 bekind.py
 ```
+
+You can also run it from another folder:
+
+```bash
+python3 /full/path/to/bekind.py
+```
+
+The script will still find `.env` and will keep the session file inside the project folder.
 
 On first start Telegram will ask for:
 
@@ -79,3 +103,4 @@ python3 -m unittest tests.test_matcher tests.test_app -v
 - `src/telegram_autoblur/data/manual_words.txt` — your manual word list
 - `src/telegram_autoblur/data/safe_words.txt` — words that must not be blurred
 - `src/telegram_autoblur/data/patterns.txt` — regex patterns
+- `.vscode/settings.json` — VS Code settings so imports from `src` work without warnings

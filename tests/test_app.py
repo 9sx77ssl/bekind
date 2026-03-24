@@ -5,7 +5,7 @@ import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from telegram_autoblur.config import load_settings
+from telegram_autoblur.config import PROJECT_ROOT, load_settings
 
 
 class ConfigTests(unittest.TestCase):
@@ -20,7 +20,7 @@ class ConfigTests(unittest.TestCase):
             settings = load_settings()
             self.assertEqual(settings.api_id, 123456)
             self.assertEqual(settings.api_hash, "hash")
-            self.assertEqual(settings.session_name, "session")
+            self.assertEqual(settings.session_name, str(PROJECT_ROOT / "session"))
         finally:
             if old_api_id is None:
                 os.environ.pop("TG_API_ID", None)
